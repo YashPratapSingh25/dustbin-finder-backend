@@ -1,0 +1,100 @@
+import logging
+from pathlib import Path
+from logging.handlers import TimedRotatingFileHandler
+from core.config import settings
+
+# Creates logs folder to add logs
+LOG_DIR = Path("logs")
+LOG_DIR.mkdir(exist_ok=True)
+
+def setup_logging():
+    formatter = (
+        logging.Formatter(  # TIME | INFO/DEBUG/ERROR/ETC | MSG
+            "%(asctime)s | %(levelname)-8s | %(message)s"
+        )
+    )
+
+    # Root logger which is the parent logger
+    # It passes the log request to its handlers
+    root_logger = logging.getLogger()
+    root_logger.setLevel(settings.ROOT_LOG_LEVEL)
+
+    if root_logger.handlers:
+        root_logger.handlers.clear()
+
+    # Write info and above logs in app.log
+    app_handler = TimedRotatingFileHandler(
+        "logs/app.log",
+        when="midnight",  # Rotates file every midnight
+        backupCount=30,  # Stores only 30 days of logs
+        encoding="utf-8",
+    )
+    app_handler.setFormatter(formatter)
+    app_handler.setLevel(settings.APP_LOG_LEVEL)
+
+    # Writes error and critical logs in error.log
+    error_handler = TimedRotatingFileHandler(
+        "logs/error.log",
+        when="midnight",
+        backupCount=30,
+        encoding="utf-8",
+    )
+    error_handler.setFormatter(formatter)
+    error_handler.setLevel(settings.ERROR_LOG_LEVEL)
+
+    # Write logs to stream and by default that is console
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    console_handler.setLevel(settings.APP_LOG_LEVEL)
+
+    # Adding all the handlers
+    root_logger.addHandler(console_handler)
+    root_logger.addHandler(app_handler)
+    root_logger.addHandler(error_handler)
+
+
+logger = logging.getLogger(__name__)
+
+
+class HttpLogger:
+    @staticmethod
+    def debug(msg: str):
+        logger.debug(
+            msg=msg,
+            extra={},
+        )
+
+    @staticmethod
+    def info(msg: str):
+        logger.info(
+            msg=msg,
+            extra={},
+        )
+
+    @staticmethod
+    def warning(msg: str):
+        logger.warning(
+            msg=msg,
+            extra={},
+        )
+
+    @staticmethod
+    def error(msg: str):
+        logger.error(
+            msg=msg,
+            extra={},
+        )
+
+    @staticmethod
+    def critical(msg: str):
+        logger.critical(
+            msg=msg,
+            extra={}
+        )
+
+    @staticmethod
+    def exception(msg: str):
+        logger.exception(
+            msg=msg,
+            extra={}
+        )
