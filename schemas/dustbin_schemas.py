@@ -18,7 +18,6 @@ class CreateDustbinRequest(BaseRequestSchema):
     latitude : float
     longitude : float
     address : str
-    accepted_waste_types : list[str] | None
     fill_level : FillLevelStatus
 
 class DustbinResponse(CreateDustbinRequest):

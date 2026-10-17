@@ -19,9 +19,6 @@ class Dustbin(Base):
 
     photos_keys : Mapped[list[str]] = mapped_column(JSONB, nullable=False)
 
-    # What kind of waste can be disposed here?
-    accepted_waste_types : Mapped[list[str] | None] = mapped_column(JSONB, nullable=True)
-
     # Current reported condition
     fill_level : Mapped[String] = mapped_column(String, nullable=True)
 

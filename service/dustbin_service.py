@@ -87,7 +87,6 @@ class DustbinService:
             address=create_dustbin_schema.address,
             photos_keys=photos_keys,
             photo_urls=presigned_urls,
-            accepted_waste_types=create_dustbin_schema.accepted_waste_types,
             fill_level=create_dustbin_schema.fill_level,
             confidence_score=new_dustbin.confidence_score,
             report_count=new_dustbin.report_count,
@@ -127,7 +126,6 @@ class DustbinService:
                 latitude = dustbin.latitude,
                 longitude = dustbin.longitude,
                 address = dustbin.address,
-                accepted_waste_types = dustbin.accepted_waste_types,
                 fill_level = dustbin.fill_level,
                 photos_keys = dustbin.photos_keys,
                 photo_urls = await self._get_photos_url(dustbin),
@@ -141,16 +139,22 @@ class DustbinService:
 
             nearby_dustbins.append(nearby_dustbin)
 
+        if (len(nearby_dustbins) == 0):
+            return PaginatedServiceResponse(result=[], total_items=0)
+
         # Fetching the real time route distance between the user and dustbin coordinates
-        routing_result = await self.routing_service.get_distance_duration(
-            user_lat=latitude, 
-            user_long=longitude,
-            dustbin_locations=[
-                # [Longitude, Latitude]
-                [dustbin.longitude, dustbin.latitude]
-                for dustbin in nearby_dustbins
-            ]
-        )
+        try:
+            routing_result = await self.routing_service.get_distance_duration(
+                user_lat=latitude, 
+                user_long=longitude,
+                dustbin_locations=[
+                    # [Longitude, Latitude]
+                    [dustbin.longitude, dustbin.latitude]
+                    for dustbin in nearby_dustbins
+                ]
+            )
+        except Exception as e:
+            return PaginatedServiceResponse(result=nearby_dustbins, total_items=total_count)
 
         # If routing service is unavailable, return the route distance calculated by Haversine
         if not routing_result:

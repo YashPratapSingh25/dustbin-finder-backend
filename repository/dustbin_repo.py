@@ -19,7 +19,6 @@ class DustbinRepository:
             longitude=create_schema.longitude,
             address=create_schema.address,
             photos_keys=object_names,
-            accepted_waste_types=create_schema.accepted_waste_types,
             fill_level=create_schema.fill_level,
         )
 
