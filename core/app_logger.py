@@ -1,7 +1,10 @@
+from contextlib import contextmanager
 import logging
 from pathlib import Path
 from logging.handlers import TimedRotatingFileHandler
+import time
 from core.config import settings
+from core.context_vars import ContextVars
 
 # Creates logs folder to add logs
 LOG_DIR = Path("logs")
@@ -55,46 +58,56 @@ def setup_logging():
 
 logger = logging.getLogger(__name__)
 
+def get_log_message(msg : str):
+    return f"{ContextVars.request_id.get()} | {ContextVars.method.get()} | {ContextVars.path.get()} | {msg}"
+
+@contextmanager
+def log_task(task_name : str):
+    start_time = time.time()
+
+    try:
+        yield
+        duration = time.time() - start_time
+        HttpLogger.info(f"{task_name} took {duration:.2f} seconds")
+    except:
+        duration = time.time() - start_time
+        HttpLogger.info(f"{task_name} failed in {duration:.2f} seconds")
+        raise
+        
 
 class HttpLogger:
     @staticmethod
     def debug(msg: str):
         logger.debug(
-            msg=msg,
-            extra={},
+            msg=get_log_message(msg),
         )
 
     @staticmethod
     def info(msg: str):
         logger.info(
-            msg=msg,
-            extra={},
+            msg=get_log_message(msg),
         )
 
     @staticmethod
     def warning(msg: str):
         logger.warning(
-            msg=msg,
-            extra={},
+            msg=get_log_message(msg),
         )
 
     @staticmethod
     def error(msg: str):
         logger.error(
-            msg=msg,
-            extra={},
+            msg=get_log_message(msg),
         )
 
     @staticmethod
     def critical(msg: str):
         logger.critical(
-            msg=msg,
-            extra={}
+            msg=get_log_message(msg),
         )
 
     @staticmethod
     def exception(msg: str):
         logger.exception(
-            msg=msg,
-            extra={}
+            msg=get_log_message(msg),
         )

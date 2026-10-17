@@ -19,7 +19,7 @@ if config.config_file_name is not None:
 
 config.set_main_option(
     "sqlalchemy.url",
-    settings.ALEMBIC_DB_URL
+    settings.ALEMBIC_DB_URL.replace("%", "%%")
 )
 
 

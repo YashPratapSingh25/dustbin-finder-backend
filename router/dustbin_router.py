@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Form, Query
 from core.dependencies import get_dustbin_repo, get_dustbin_service, get_images_bytes, get_pagination, get_s3_service
 from repository.dustbin_repo import DustbinRepository
 from schemas.base_schema import ApiResponseSchema, PaginatedResponseSchema, Pagination, PaginationMetaData
-from schemas.dustbin_schemas import CreateDustbinRequest, DustbinNearbyResponse, DustbinResponse
+from schemas.dustbin_schemas import CreateDustbinRequest, DustbinNearbyResponse, DustbinResponse, FillLevelStatus
 from service.dustbin_service import DustbinService
 from service.s3 import S3Service
 from utils.annotated_types import PageNumberQuery, PageSizeQuery
@@ -19,7 +19,7 @@ async def create_dustbin(
     latitude: float = Form(...),
     longitude: float = Form(...),
     address: str = Form(...),
-    fill_level: str | None = Form(default=None),
+    fill_level: FillLevelStatus | None = Form(default=None),
     images_bytes : list[bytes] = Depends(get_images_bytes),
     dustbin_service : DustbinService = Depends(get_dustbin_service)
 ):
