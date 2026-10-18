@@ -125,7 +125,7 @@ class DustbinService:
                 pagination.offset,
             )
 
-        nearby_dustbins = []
+        nearby_dustbins : list[DustbinNearbyResponse] = []
 
         for dustbin, distance_in_km in db_result:
             nearby_dustbin = DustbinNearbyResponse(
@@ -180,8 +180,10 @@ class DustbinService:
             # Round to nearest 50 (100, 150, 200, 250....)
             nearby_dustbins[i].distance_in_m = round_to_multiple(distances[i], 50)
 
-        nearby_dustbins = sorted(
+        sorted_dustbins = sorted(
             nearby_dustbins, key=lambda dustbin: dustbin.distance_in_m
         )
 
-        return PaginatedServiceResponse(result=nearby_dustbins, total_items=total_count)
+        filtered_dustbins = [dustbin for dustbin in sorted_dustbins if dustbin.distance_in_m < radius_in_m]
+
+        return PaginatedServiceResponse(result=filtered_dustbins, total_items=total_count)
