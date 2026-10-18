@@ -67,13 +67,9 @@ def log_task(task_name : str):
 
     try:
         yield
+    finally:
         duration = time.time() - start_time
         HttpLogger.info(f"{task_name} took {duration:.2f} seconds")
-    except:
-        duration = time.time() - start_time
-        HttpLogger.info(f"{task_name} failed in {duration:.2f} seconds")
-        raise
-        
 
 class HttpLogger:
     @staticmethod

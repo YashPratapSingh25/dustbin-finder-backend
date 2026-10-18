@@ -15,7 +15,7 @@ class RoutingService:
         user_lat : float,
         user_long : float,
         dustbin_locations : list[list[float, float]],
-        profile : Literal["driving-car", "foot-walking", ] = "foot-walking"
+        profile : Literal["driving-car", "foot-walking", "cycling-road"] = settings.DEFAULT_ORS_PROFILE
     ) -> tuple[list[float], list[float]] | None:
         user_location = (user_long, user_lat)
 
@@ -32,8 +32,7 @@ class RoutingService:
         }
 
         
-        
-        async with httpx.AsyncClient(timeout=60) as client:
+        async with httpx.AsyncClient(timeout=15) as client:
             response = await client.post(
                 url=f"{self.OPEN_ROUTING_SERVICE_MATRIX_URL}/{profile}",
                 data=request.model_dump_json(),

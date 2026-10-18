@@ -13,6 +13,7 @@ from schemas.dustbin_schemas import (
 )
 from service.routing_service import RoutingService
 from service.s3 import S3Service
+from utils.services import round_to_multiple
 
 
 class DustbinService:
@@ -162,7 +163,7 @@ class DustbinService:
                     ],
                 )
         except Exception as e:
-            HttpLogger.error("OPEN ROUTE SERVICE NOT WORKING :", e)
+            HttpLogger.error(f"OPEN ROUTE SERVICE NOT WORKING: [{type(e).__name__}]: {repr(e)}")
             return PaginatedServiceResponse(
                 result=nearby_dustbins, total_items=total_count
             )
@@ -176,7 +177,8 @@ class DustbinService:
         durations, distances = routing_result
 
         for i in range(len(distances)):
-            nearby_dustbins[i].distance_in_m = distances[i]
+            # Round to nearest 50 (100, 150, 200, 250....)
+            nearby_dustbins[i].distance_in_m = round_to_multiple(distances[i], 50)
 
         nearby_dustbins = sorted(
             nearby_dustbins, key=lambda dustbin: dustbin.distance_in_m

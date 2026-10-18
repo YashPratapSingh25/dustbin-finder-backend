@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     AWS_SECRET_ACCESS_KEY : str
     PRESIGNED_URL_DURATION : int
     OPEN_ROUTE_SERVICE_API_KEY : str
+    DEFAULT_ORS_PROFILE : str
 
     model_config = SettingsConfigDict(
         extra="ignore"

@@ -35,3 +35,6 @@ def get_bounding_box(
         longitude - lng_delta, # Minimum Longitude
         longitude + lng_delta, # Maximum Longitude
     )
+
+def round_to_multiple(number, multiple):
+    return round(number / multiple) * multiple
