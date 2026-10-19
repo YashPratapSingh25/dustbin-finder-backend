@@ -19,7 +19,7 @@ class DustbinRepository:
             longitude=create_schema.longitude,
             address=create_schema.address,
             photos_keys=object_names,
-            fill_level=create_schema.fill_level,
+            # fill_level=create_schema.fill_level,
         )
 
         self.db_session.add(new_dustbin)

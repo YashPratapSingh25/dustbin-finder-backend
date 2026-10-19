@@ -19,7 +19,7 @@ async def create_dustbin(
     latitude: float = Form(...),
     longitude: float = Form(...),
     address: str = Form(...),
-    fill_level: FillLevelStatus | None = Form(default=None),
+    # fill_level: FillLevelStatus | None = Form(default=None),
     images_bytes : list[bytes] = Depends(get_images_bytes),
     dustbin_service : DustbinService = Depends(get_dustbin_service)
 ):
@@ -28,7 +28,7 @@ async def create_dustbin(
         latitude=latitude,
         address=address,
         longitude=longitude,
-        fill_level=fill_level
+        # fill_level=fill_level
     )
     result = await dustbin_service.create_dustbin(
         schema,

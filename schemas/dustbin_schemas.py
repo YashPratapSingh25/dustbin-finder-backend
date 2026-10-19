@@ -18,7 +18,7 @@ class CreateDustbinRequest(BaseRequestSchema):
     latitude : float
     longitude : float
     address : str
-    fill_level : FillLevelStatus
+    # fill_level : FillLevelStatus
 
 class DustbinResponse(CreateDustbinRequest):
     id : UUID

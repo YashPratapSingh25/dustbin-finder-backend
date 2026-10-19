@@ -20,7 +20,7 @@ class Dustbin(Base):
     photos_keys : Mapped[list[str]] = mapped_column(JSONB, nullable=False)
 
     # Current reported condition
-    fill_level : Mapped[String] = mapped_column(String, nullable=True)
+    # fill_level : Mapped[String] = mapped_column(String, nullable=True)
 
     # Confidence that this bin actually exists and its data is correct
     confidence_score : Mapped[float] = mapped_column(Float, default=50.0, nullable=False)

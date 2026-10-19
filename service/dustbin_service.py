@@ -93,7 +93,7 @@ class DustbinService:
             address=create_dustbin_schema.address,
             photos_keys=photos_keys,
             photo_urls=presigned_urls,
-            fill_level=create_dustbin_schema.fill_level,
+            # fill_level=create_dustbin_schema.fill_level,
             confidence_score=new_dustbin.confidence_score,
             report_count=new_dustbin.report_count,
             last_verified_at=new_dustbin.last_verified_at,
@@ -134,7 +134,7 @@ class DustbinService:
                 latitude=dustbin.latitude,
                 longitude=dustbin.longitude,
                 address=dustbin.address,
-                fill_level=dustbin.fill_level,
+                # fill_level=dustbin.fill_level,
                 photos_keys=dustbin.photos_keys,
                 photo_urls=await self._get_photos_url(dustbin),
                 confidence_score=dustbin.confidence_score,
@@ -177,8 +177,8 @@ class DustbinService:
         durations, distances = routing_result
 
         for i in range(len(distances)):
-            # Round to nearest 50 (100, 150, 200, 250....)
-            nearby_dustbins[i].distance_in_m = round_to_multiple(distances[i], 50)
+            # Round to nearest 10 (100, 110, 120, 130....)
+            nearby_dustbins[i].distance_in_m = round_to_multiple(distances[i], 10)
 
         sorted_dustbins = sorted(
             nearby_dustbins, key=lambda dustbin: dustbin.distance_in_m
