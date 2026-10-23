@@ -57,7 +57,7 @@ async def _get_image_bytes(file: UploadFile) -> bytes:
 
 
 async def get_images_bytes(images: list[UploadFile] = File(...)) -> list[bytes]:
-    if not 0 < len(images) < 5:
+    if not 0 < len(images) <= 5:
         raise BadRequestException(message="Upload images in the range of 1 to 5")
 
     bytes_list = []
