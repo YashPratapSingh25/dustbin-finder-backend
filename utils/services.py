@@ -1,4 +1,5 @@
 import json
+import math
 import re
 from math import cos, radians
 
@@ -37,4 +38,4 @@ def get_bounding_box(
     )
 
 def round_to_multiple(number, multiple):
-    return round(number / multiple) * multiple
+    return math.floor(number / multiple + 0.5) * multiple

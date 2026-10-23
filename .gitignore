@@ -41,7 +41,7 @@ logs/
 *.db
 *.sqlite3
 
-# Pytest
+# Pytestqqq
 .pytest_cache/
 .coverage
 .coverage.*

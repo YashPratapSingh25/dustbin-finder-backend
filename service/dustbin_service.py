@@ -75,9 +75,7 @@ class DustbinService:
                 obj_name = f"dustbin_images/{create_dustbin_schema.name.replace(" ", "")}_{uuid.uuid4()}"
                 photos_keys.append(obj_name)
                 # Uploading and fetching the presigned url to return in API
-                url = await self.s3_service.upload_file(
-                    images_bytes[i], photos_keys[i]
-                )
+                url = await self.s3_service.upload_file(images_bytes[i], photos_keys[i])
                 presigned_urls.append(url)
 
         with log_task("ADD_DUSTBIN_QUERY"):
@@ -125,7 +123,7 @@ class DustbinService:
                 pagination.offset,
             )
 
-        nearby_dustbins : list[DustbinNearbyResponse] = []
+        nearby_dustbins: list[DustbinNearbyResponse] = []
 
         for dustbin, distance_in_km in db_result:
             nearby_dustbin = DustbinNearbyResponse(
@@ -148,7 +146,7 @@ class DustbinService:
             nearby_dustbins.append(nearby_dustbin)
 
         if len(nearby_dustbins) == 0:
-            return PaginatedServiceResponse(result=[], total_items=0)
+            return PaginatedServiceResponse(result=[], total_items=total_count)
 
         # Fetching the real time route distance between the user and dustbin coordinates
         try:
@@ -163,7 +161,9 @@ class DustbinService:
                     ],
                 )
         except Exception as e:
-            HttpLogger.error(f"OPEN ROUTE SERVICE NOT WORKING: [{type(e).__name__}]: {repr(e)}")
+            HttpLogger.error(
+                f"OPEN ROUTE SERVICE NOT WORKING: [{type(e).__name__}]: {repr(e)}"
+            )
             return PaginatedServiceResponse(
                 result=nearby_dustbins, total_items=total_count
             )
@@ -176,6 +176,12 @@ class DustbinService:
 
         durations, distances = routing_result
 
+        if not distances or len(distances) == 0 or distances[0] == None:
+            HttpLogger.error("DISTANCES IS NONE.")
+            return PaginatedServiceResponse(
+                result=nearby_dustbins, total_items=total_count
+            )
+        
         for i in range(len(distances)):
             # Round to nearest 10 (100, 110, 120, 130....)
             nearby_dustbins[i].distance_in_m = round_to_multiple(distances[i], 10)
@@ -184,6 +190,4 @@ class DustbinService:
             nearby_dustbins, key=lambda dustbin: dustbin.distance_in_m
         )
 
-        filtered_dustbins = [dustbin for dustbin in sorted_dustbins if dustbin.distance_in_m < radius_in_m]
-
-        return PaginatedServiceResponse(result=filtered_dustbins, total_items=total_count)
+        return PaginatedServiceResponse(result=sorted_dustbins, total_items=total_count)

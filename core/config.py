@@ -5,6 +5,7 @@ from pydantic_settings import SettingsConfigDict, BaseSettings
 class Settings(BaseSettings):
     DATABASE_URL : str
     ALEMBIC_DB_URL : str
+    TEST_DB_URL : str
     SHOW_DB_LOG : bool
     ROOT_LOG_LEVEL : str
     APP_LOG_LEVEL : str
